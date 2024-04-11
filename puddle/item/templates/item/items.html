@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+
+
+{% block title %}
+    Items
+{% endblock title %}
+
+
+{% block content %}
+    <div class="pb-6 grid grid-cols-4 gap-4 bg-gray-100">
+        <div class="col-span-1">
+            <form method="get" action="{% url 'item:items' %}">
+                <input name="query" class="w-full py-4 px-6 border rounded-lg" type="text" value="{{ query }}" placeholder="Pesquisar por um produto">
+                <button class="mt-2 py-2 px-6 text-lg bg-teal-500 text-white rounded-lg hover:bg-teal-700">Pesquisar</button>
+            </form>
+
+            <hr class="my-6">
+
+            <p class="font-semibold">Categorias</p>
+
+            <ul>
+                {% for category in categories %}
+                    <li class="py-2 px-2 rounded-lg{% if category.id == category_id %} bg-gray-200{% endif %}">
+                        <a href="{% url 'item:items' %}?query={{ query }}&category={{ category.id}}">{{ category.nome }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <hr class="my-6">
+
+            <p class="font-semibold">Limpar Filtros</p>
+
+            <ul>
+                <li>
+                    <a href="{% url 'item:items' %}" class="mt-2 py-2 px-6 inline-block bg-yellow-500 text-lg rounded-lg text-white hover:bg-yellow-600">Limpar</a>
+                </li>
+            </ul>
+
+        </div>
+        
+        <div class="col-span-3">
+            <div class="grid grid-cols-3 gap-3">
+                {% for item in items %}
+                    <div>
+                        <a href="{% url 'item:detail' item.id %}">
+                            <div class="image-container">
+                                <img src="{{ item.imagem.url }}" class="product-image" alt="{{item.nome}}">
+                            </div>
+            
+                            <div class="p-6 bg-white rounded-xl">
+                                <h2 class="text-1xl">{{item.nome}}</h2>
+                                <p class="text-gray-500">R$ {{item.preço}}</p>
+                            </div>
+                        </a>
+                    </div>       
+                {% endfor %}
+            </div>       
+        </div>
+
+    </div>
+{% endblock content %}
+    
+    

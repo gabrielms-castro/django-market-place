@@ -1,0 +1,84 @@
+{% extends 'core/base.html' %}
+
+
+{% block title %}
+{{item.name}}
+{% endblock title %}
+
+
+{% block content %}
+<div class="grid grid-cols-5 gap-6">
+    <div class="col-span-3">
+        <img src="{{ item.imagem.url }}" class="rounded-xl">
+    </div>
+
+    <div class="col-span-2 p-6 bg-gray-100 rounded-xl">
+        <h1 class="mb-6 text-3xl"><strong>{{ item.nome }}</strong></h1>
+        <p class="text-gray-700"><strong>R$ {{ item.preço }}</strong></p>
+        <p class="text-gray-500"><strong>Criado por: </strong>{{ item.criado_por }}</p>
+        <a href="#"
+            class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Comprar agora</a>
+        <a href="#"
+            class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700">Adicionar ao carrinho</a>
+        <br>
+        <br>
+        {% if item.descrição %}
+        <p class="text-gray-700">
+            <strong>Descrição: </strong>
+            <br>
+            {{ item.descrição }}
+        </p>
+        {% endif %}
+
+        {% if request.user == item.criado_por %} <! se o item for do usuário, pode excluir ou editar>
+            <a href="{% url 'item:delete' item.id %}" class="inline-block mt-6 px-6 text-lg font-semibold bg-red-500 text-white rounded-lg hover:bg-red-700">Excluir anúncio</a>
+            <a href="{% url 'item:edit' item.id %}" class="inline-block mt-6 px-6 text-lg font-semibold bg-gray-500 text-white rounded-lg hover:bg-gray-700">Editar</a>
+        
+            {% else %} <! se o item não for do usuário, pode contatar o vendedor>
+            <a href="{% url 'conversation:new' item.id %}" class="inline-block mt-6 px-6 text-lg font-semibold bg-teal-500 text-white rounded-lg hover:bg-teal-700">Contatar Vendedor</a>
+        {% endif %}
+        
+    </div>
+</div>
+    {% block content2 %}
+    <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
+        <h2 class="mb-12 text-2xl text-left">Ofertas do dia</h2>
+
+        <style>
+            /* Estilos CSS */
+            .image-container {
+                height: 200px;
+                /* Defina a altura desejada */
+                overflow: hidden;
+            }
+
+            .product-image {
+                width: 100%;
+                height: auto;
+                display: block;
+                object-fit: fill;
+                /* Isso garante que a imagem seja cortada para caber no contêiner */
+            }
+        </style>
+
+        <div class="grid grid-cols-3 gap-3">
+            {% for item in related_items %}
+            <div>
+                <a href="{% url 'item:detail' item.id %}">
+                    <div class="image-container">
+                        <img src="{{ item.imagem.url }}" class="product-image" alt="{{item.nome}}">
+                    </div>
+
+                    <div class="p-6 bg-white rounded-xl">
+                        <h2 class="text-1xl">{{item.nome}}</h2>
+                        <p class="text-gray-500">R$ {{item.preço}}</p>
+                    </div>
+                </a>
+            </div>
+
+            {% endfor %}
+        </div>
+
+    </div>
+    {% endblock content2 %}
+{% endblock content %}
